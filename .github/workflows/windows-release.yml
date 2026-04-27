@@ -1,0 +1,115 @@
+name: Windows release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: "Optional tag to publish as a GitHub Release, for example v0.1-explorer-browser"
+        required: false
+        type: string
+      prerelease:
+        description: "Mark the GitHub Release as a prerelease"
+        required: false
+        default: true
+        type: boolean
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  portable:
+    name: Build portable Windows ZIP
+    runs-on: windows-latest
+
+    defaults:
+      run:
+        shell: msys2 {0}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: true
+
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: >-
+            git
+            zip
+            mingw-w64-ucrt-x86_64-cmake
+            mingw-w64-ucrt-x86_64-exiv2
+            mingw-w64-ucrt-x86_64-gcc
+            mingw-w64-ucrt-x86_64-gtest
+            mingw-w64-ucrt-x86_64-libraw
+            mingw-w64-ucrt-x86_64-libtiff
+            mingw-w64-ucrt-x86_64-ninja
+            mingw-w64-ucrt-x86_64-opencv
+            mingw-w64-ucrt-x86_64-pkgconf
+            mingw-w64-ucrt-x86_64-qt6-5compat
+            mingw-w64-ucrt-x86_64-qt6-base
+            mingw-w64-ucrt-x86_64-qt6-imageformats
+            mingw-w64-ucrt-x86_64-qt6-svg
+            mingw-w64-ucrt-x86_64-qt6-tools
+            mingw-w64-ucrt-x86_64-quazip-qt6
+
+      - name: Configure
+        run: >
+          cmake
+          -S ImageLounge
+          -B build
+          -G Ninja
+          -DCMAKE_BUILD_TYPE=RelWithDebInfo
+          -DENABLE_QUAZIP=ON
+          -DUSE_SYSTEM_QUAZIP=ON
+          -DENABLE_TRANSLATIONS=ON
+
+      - name: Build
+        run: cmake --build build --parallel 4
+
+      - name: Get version
+        id: version
+        run: |
+          VERSION=$(grep NOMACS_VERSION_STR build/DkVersion.h | sed -E 's/.*"([^"]+)".*/\1/')
+          SHA=$(git rev-parse --short HEAD)
+          ARTIFACT_NAME="nomacs-explorer-browser-${VERSION}-${SHA}-win64"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "artifact_name=$ARTIFACT_NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Package portable app
+        run: bash scripts/package-msys2-portable.sh build package "${{ steps.version.outputs.artifact_name }}"
+
+      - name: Create ZIP
+        run: |
+          cd package
+          zip -r "${{ steps.version.outputs.artifact_name }}.zip" "${{ steps.version.outputs.artifact_name }}"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.version.outputs.artifact_name }}
+          path: package/${{ steps.version.outputs.artifact_name }}.zip
+          retention-days: 30
+
+      - name: Publish GitHub Release
+        if: github.ref_type == 'tag' || inputs.tag_name != ''
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag_name || github.ref_name }}
+          prerelease: ${{ github.ref_type != 'tag' && inputs.prerelease != false }}
+          files: package/${{ steps.version.outputs.artifact_name }}.zip
+          body: |
+            Portable Windows build of the nomacs Explorer Browser fork.
+
+            Fork-specific behavior:
+            - The file manager sidebar shows folders only.
+            - Clicking a folder opens a thumbnail grid for images in that folder.
+            - Double-clicking a thumbnail opens image view.
+            - Double-clicking image view returns to thumbnails.
+            - Middle-clicking image view toggles fullscreen.

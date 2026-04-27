@@ -10,6 +10,10 @@ This fork focuses on a more Explorer-like image browsing workflow:
 - Double-clicking the image view returns to the thumbnail grid.
 - Middle-clicking the image view toggles fullscreen mode.
 
+## Windows Builds
+
+This fork publishes portable Windows ZIP builds from GitHub Actions. Download the latest build from the fork's [Releases page](https://github.com/Sichtermann/nomacs/releases), unzip it, and start `nomacs.exe`.
+
 nomacs is a free, open source image viewer, which supports multiple platforms. You can use it for viewing all common image formats including RAW and psd images. nomacs is licensed under the GNU General Public License v3 and available for Windows, Linux, FreeBSD, Mac, Haiku, and OS/2.
 
 [![Build status](https://ci.appveyor.com/api/projects/status/ye6wd1hap4cebyo8?svg=true)](https://ci.appveyor.com/project/novomesk/nomacs)
