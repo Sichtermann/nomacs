@@ -90,11 +90,51 @@ jobs:
           cd package
           zip -r "${{ steps.version.outputs.artifact_name }}.zip" "${{ steps.version.outputs.artifact_name }}"
 
+      - name: Setup WiX
+        shell: pwsh
+        run: |
+          $wixBins = @(
+            "${env:ProgramFiles(x86)}\WiX Toolset v3.14\bin",
+            "${env:ProgramFiles(x86)}\WiX Toolset v3.11\bin"
+          )
+          $wixBin = $wixBins | Where-Object { Test-Path (Join-Path $_ "candle.exe") } | Select-Object -First 1
+
+          if (-not $wixBin) {
+            choco install wixtoolset --no-progress -y
+            $wixBin = $wixBins | Where-Object { Test-Path (Join-Path $_ "candle.exe") } | Select-Object -First 1
+          }
+
+          if (-not $wixBin) {
+            throw "WiX Toolset v3 was not found after installation."
+          }
+
+          $wixBin | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+          Write-Host "Using WiX from $wixBin"
+
+      - name: Build MSI installer
+        shell: pwsh
+        run: |
+          Remove-Item -Recurse -Force installer\nomacs.x64 -ErrorAction SilentlyContinue
+          Copy-Item -Recurse "package\${{ steps.version.outputs.artifact_name }}" installer\nomacs.x64
+
+          $version = "${{ steps.version.outputs.version }}"
+          Set-Content -Path installer\nomacs-setup-versioned.wxi -Encoding UTF8 -Value @(
+            "<Include>",
+            "  <?define ProductVersion=`"$version`"?>",
+            "</Include>"
+          )
+
+          Push-Location installer
+          cmd /c make-msi-setup.bat
+          Pop-Location
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ steps.version.outputs.artifact_name }}
-          path: package/${{ steps.version.outputs.artifact_name }}.zip
+          path: |
+            package/${{ steps.version.outputs.artifact_name }}.zip
+            installer/nomacs-setup-x64.msi
           retention-days: 30
 
       - name: Publish GitHub Release
@@ -103,9 +143,11 @@ jobs:
         with:
           tag_name: ${{ inputs.tag_name || github.ref_name }}
           prerelease: ${{ github.ref_type != 'tag' && inputs.prerelease != false }}
-          files: package/${{ steps.version.outputs.artifact_name }}.zip
+          files: |
+            package/${{ steps.version.outputs.artifact_name }}.zip
+            installer/nomacs-setup-x64.msi
           body: |
-            Portable Windows build of the nomacs Explorer Browser fork.
+            Windows build of the nomacs Explorer Browser fork.
 
             Fork-specific behavior:
             - The file manager sidebar shows folders only.
