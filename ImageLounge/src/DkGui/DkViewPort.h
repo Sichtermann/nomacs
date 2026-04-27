@@ -80,6 +80,7 @@ signals:
     void mouseClickSignal(QMouseEvent *event, QPoint imgPos) const;
     void showProgress(bool show, int time = -1) const;
     void viewImageChanged() const;
+    void showThumbViewSignal() const;
 
 public:
     void fullView() override;

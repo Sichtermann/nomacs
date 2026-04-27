@@ -399,6 +399,8 @@ DkExplorer::~DkExplorer()
 void DkExplorer::createLayout()
 {
     mFileModel = new DkFileSystemModel(this);
+    mFileModel->setFilter(QDir::Dirs | QDir::Drives | QDir::NoDotAndDotDot | QDir::AllDirs);
+    mFileModel->setNameFilters(QStringList());
 
     mSortModel = new DkSortFileProxyModel(this);
     mSortModel->setSourceModel(mFileModel);
@@ -436,12 +438,11 @@ void DkExplorer::setCurrentPath(const QString &path)
     // we could be passed a file, dir, zipfile, or zipfile member
     DkFileInfo info(path);
 
-    // we can't see inside zip with QFileSystemModel so select the container
-    QString newPath = info.isFromZip() ? info.dirPath() : info.path();
+    // we can't see inside zip with QFileSystemModel; files are hidden in the tree,
+    // so select the containing folder instead.
+    QString newPath = info.isDir() && !info.isZipFile() ? info.path() : info.dirPath();
 
-    // expand folder if we're selecting a folder, otherwise its automatic
-    if (info.isDir() && !info.isZipFile())
-        mFileTree->expand(mSortModel->mapFromSource(mFileModel->index(info.path())));
+    mFileTree->expand(mSortModel->mapFromSource(mFileModel->index(newPath)));
 
     // if we are setting the index do not behave as if user clicked an item
     bool loadSelected = mLoadSelected;

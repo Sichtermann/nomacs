@@ -1003,7 +1003,7 @@ void DkNoMacs::showExplorer(bool show, bool saveSettings)
         connect(mExplorer, &DkExplorer::openFile, getTabWidget(), [this](const QString &path) {
             getTabWidget()->load(path);
         });
-        connect(mExplorer, &DkExplorer::openDir, getTabWidget(), &DkCentralWidget::load);
+        connect(mExplorer, &DkExplorer::openDir, getTabWidget(), &DkCentralWidget::loadDirToThumbView);
         connect(getTabWidget(), &DkCentralWidget::imageUpdatedSignal, mExplorer, &DkExplorer::setCurrentImage);
         connect(getTabWidget(), &DkCentralWidget::thumbViewLoadedSignal, mExplorer, &DkExplorer::setCurrentPath);
     }

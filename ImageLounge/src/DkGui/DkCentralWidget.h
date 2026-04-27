@@ -157,6 +157,7 @@ public slots:
 
     // load file/dir to current tab
     void load(const QString &path);
+    void loadDirToThumbView(const QString &path);
 
     // load file/dir to new tab
     void loadToTab(const QString &path);

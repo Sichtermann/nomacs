@@ -622,6 +622,9 @@ void DkCentralWidget::createViewPort()
     connect(vp, &DkViewPort::addTabSignal, this, [this](const QString &filePath) {
         addTab(filePath);
     });
+    connect(vp, &DkViewPort::showThumbViewSignal, this, [this]() {
+        showThumbView(true);
+    });
     connect(vp, &DkViewPort::showProgress, this, &DkCentralWidget::showProgress);
 
     mWidgets[viewport_widget] = vp;
@@ -1172,6 +1175,38 @@ void DkCentralWidget::load(const QString &path)
         else
             loader->load(fileInfo);
     }
+    updateTab(tab); // required to set the tab text on background tabs
+}
+
+void DkCentralWidget::loadDirToThumbView(const QString &path)
+{
+    if (!hasViewPort())
+        createViewPort(); // viewport is shared by all tabs
+
+    if (mTabbar->count() == 0) {
+        QSharedPointer<DkTabInfo> newTab(new DkTabInfo(DkTabInfo::tab_empty));
+        addTab(newTab);
+    }
+
+    QSharedPointer<DkTabInfo> tab = mTabInfos[mTabbar->currentIndex()];
+    QSharedPointer<DkImageLoader> loader = tab->getImageLoader();
+
+    if (!loader->promptSaveBeforeUnload())
+        return;
+
+    DkFileInfo fileInfo(path);
+    if (!fileInfo.isDir()) {
+        load(path);
+        return;
+    }
+
+    if (!loader->loadDir(fileInfo.path())) {
+        setInfo(tr("I could not load \"%1\"").arg(path));
+        return;
+    }
+
+    loader->setCurrentImage(loader->getImages().value(0));
+    showThumbView();
     updateTab(tab); // required to set the tab text on background tabs
 }
 

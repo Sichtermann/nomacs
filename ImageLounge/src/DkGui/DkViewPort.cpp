@@ -1172,8 +1172,11 @@ void DkViewPort::mousePressEvent(QMouseEvent *event)
         mRepeatZoomTimer->start();
     }
 
-    if (DkSettingsManager::param().app().closeOnMiddleMouse && event->buttons() == Qt::MiddleButton)
-        DkUtils::getMainWindow()->close();
+    if (event->button() == Qt::MiddleButton) {
+        DkActionManager::instance().action(DkActionManager::menu_view_fullscreen)->trigger();
+        event->accept();
+        return;
+    }
 
     // ok, start panning
     if (mWorldMatrix.m11() > 1 && !imageInside() && event->buttons() == Qt::LeftButton) {
@@ -1228,6 +1231,12 @@ void DkViewPort::mouseDoubleClickEvent(QMouseEvent *event)
             loadFileFast(skip);
             return;
         }
+    }
+
+    if (event->button() == Qt::LeftButton) {
+        emit showThumbViewSignal();
+        event->accept();
+        return;
     }
 
     DkBaseViewPort::mouseDoubleClickEvent(event);

@@ -1,5 +1,15 @@
 # nomacs - Image Lounge 🍸
 
+## About This Fork
+
+This fork focuses on a more Explorer-like image browsing workflow:
+
+- The file manager sidebar shows folders only, not individual image files.
+- Clicking a folder opens a thumbnail grid for all images in that folder.
+- Double-clicking a thumbnail opens the image view.
+- Double-clicking the image view returns to the thumbnail grid.
+- Middle-clicking the image view toggles fullscreen mode.
+
 nomacs is a free, open source image viewer, which supports multiple platforms. You can use it for viewing all common image formats including RAW and psd images. nomacs is licensed under the GNU General Public License v3 and available for Windows, Linux, FreeBSD, Mac, Haiku, and OS/2.
 
 [![Build status](https://ci.appveyor.com/api/projects/status/ye6wd1hap4cebyo8?svg=true)](https://ci.appveyor.com/project/novomesk/nomacs)
