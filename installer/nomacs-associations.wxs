@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Fragment>
+		<ComponentGroup Id="FileAssociationRegistry">
+			<ComponentRef Id="FileAssociations"/>
+		</ComponentGroup>
+	</Fragment>
+
+	<Fragment>
+		<DirectoryRef Id="INSTALLDIR">
+			<Component Id="FileAssociations" Guid="5a6f0dc8-d33e-4b41-9f0b-28e39ac466f7">
+				<RegistryValue Root="HKCU" Key="Software\nomacs\Installer" Name="FileAssociations" Type="integer" Value="1" KeyPath="yes"/>
+
+				<RegistryKey Root="HKCR" Key=".avif">
+					<RegistryValue Type="string" Value="nomacs.avif.3"/>
+				</RegistryKey>
+				<RegistryKey Root="HKCR" Key=".bmp">
+					<RegistryValue Type="string" Value="nomacs.bmp.3"/>
+				</RegistryKey>
+				<RegistryKey Root="HKCR" Key=".gif">
+					<RegistryValue Type="string" Value="nomacs.gif.3"/>
+				</RegistryKey>
+				<RegistryKey Root="HKCR" Key=".heic">
+					<RegistryValue Type="string" Value="nomacs.heic.3"/>
+				</RegistryKey>
+				<RegistryKey Root="HKCR" Key=".heif">
+					<RegistryValue Type="string" Value="nomacs.heif.3"/>
+				</RegistryKey>
+				<RegistryKey Root="HKCR" Key=".jpe">
+					<RegistryValue Type="string" Value="nomacs.jpg.3"/>
+				</RegistryKey>
+				<RegistryKey Root="HKCR" Key=".jpeg">
+					<RegistryValue Type="string" Value="nomacs.jpg.3"/>
+				</RegistryKey>
+				<RegistryKey Root="HKCR" Key=".jpg">
+					<RegistryValue Type="string" Value="nomacs.jpg.3"/>
+				</RegistryKey>
+				<RegistryKey Root="HKCR" Key=".png">
+					<RegistryValue Type="string" Value="nomacs.png.3"/>
+				</RegistryKey>
+				<RegistryKey Root="HKCR" Key=".tif">
+					<RegistryValue Type="string" Value="nomacs.tif.3"/>
+				</RegistryKey>
+				<RegistryKey Root="HKCR" Key=".tiff">
+					<RegistryValue Type="string" Value="nomacs.tif.3"/>
+				</RegistryKey>
+				<RegistryKey Root="HKCR" Key=".webp">
+					<RegistryValue Type="string" Value="nomacs.webp.3"/>
+				</RegistryKey>
+
+				<RegistryKey Root="HKCR" Key="nomacs.avif.3">
+					<RegistryValue Type="string" Value="AV1 Image File Format"/>
+					<RegistryKey Key="DefaultIcon">
+						<RegistryValue Type="string" Value="[BIN_DIR_REF]nomacs.exe,0"/>
+					</RegistryKey>
+					<RegistryKey Key="shell\open\command">
+						<RegistryValue Type="string" Value="&quot;[BIN_DIR_REF]nomacs.exe&quot; &quot;%1&quot;"/>
+					</RegistryKey>
+				</RegistryKey>
+				<RegistryKey Root="HKCR" Key="nomacs.bmp.3">
+					<RegistryValue Type="string" Value="Windows Bitmap"/>
+					<RegistryKey Key="DefaultIcon">
+						<RegistryValue Type="string" Value="[BIN_DIR_REF]nomacs.exe,4"/>
+					</RegistryKey>
+					<RegistryKey Key="shell\open\command">
+						<RegistryValue Type="string" Value="&quot;[BIN_DIR_REF]nomacs.exe&quot; &quot;%1&quot;"/>
+					</RegistryKey>
+				</RegistryKey>
+				<RegistryKey Root="HKCR" Key="nomacs.gif.3">
+					<RegistryValue Type="string" Value="Graphic Interchange Format"/>
+					<RegistryKey Key="DefaultIcon">
+						<RegistryValue Type="string" Value="[BIN_DIR_REF]nomacs.exe,2"/>
+					</RegistryKey>
+					<RegistryKey Key="shell\open\command">
+						<RegistryValue Type="string" Value="&quot;[BIN_DIR_REF]nomacs.exe&quot; &quot;%1&quot;"/>
+					</RegistryKey>
+				</RegistryKey>
+				<RegistryKey Root="HKCR" Key="nomacs.heic.3">
+					<RegistryValue Type="string" Value="HEIC Image"/>
+					<RegistryKey Key="DefaultIcon">
+						<RegistryValue Type="string" Value="[BIN_DIR_REF]nomacs.exe,0"/>
+					</RegistryKey>
+					<RegistryKey Key="shell\open\command">
+						<RegistryValue Type="string" Value="&quot;[BIN_DIR_REF]nomacs.exe&quot; &quot;%1&quot;"/>
+					</RegistryKey>
+				</RegistryKey>
+				<RegistryKey Root="HKCR" Key="nomacs.heif.3">
+					<RegistryValue Type="string" Value="HEIF Image"/>
+					<RegistryKey Key="DefaultIcon">
+						<RegistryValue Type="string" Value="[BIN_DIR_REF]nomacs.exe,0"/>
+					</RegistryKey>
+					<RegistryKey Key="shell\open\command">
+						<RegistryValue Type="string" Value="&quot;[BIN_DIR_REF]nomacs.exe&quot; &quot;%1&quot;"/>
+					</RegistryKey>
+				</RegistryKey>
+				<RegistryKey Root="HKCR" Key="nomacs.jpg.3">
+					<RegistryValue Type="string" Value="JPEG"/>
+					<RegistryKey Key="DefaultIcon">
+						<RegistryValue Type="string" Value="[BIN_DIR_REF]nomacs.exe,1"/>
+					</RegistryKey>
+					<RegistryKey Key="shell\open\command">
+						<RegistryValue Type="string" Value="&quot;[BIN_DIR_REF]nomacs.exe&quot; &quot;%1&quot;"/>
+					</RegistryKey>
+				</RegistryKey>
+				<RegistryKey Root="HKCR" Key="nomacs.png.3">
+					<RegistryValue Type="string" Value="PNG"/>
+					<RegistryKey Key="DefaultIcon">
+						<RegistryValue Type="string" Value="[BIN_DIR_REF]nomacs.exe,3"/>
+					</RegistryKey>
+					<RegistryKey Key="shell\open\command">
+						<RegistryValue Type="string" Value="&quot;[BIN_DIR_REF]nomacs.exe&quot; &quot;%1&quot;"/>
+					</RegistryKey>
+				</RegistryKey>
+				<RegistryKey Root="HKCR" Key="nomacs.tif.3">
+					<RegistryValue Type="string" Value="TIFF"/>
+					<RegistryKey Key="DefaultIcon">
+						<RegistryValue Type="string" Value="[BIN_DIR_REF]nomacs.exe,4"/>
+					</RegistryKey>
+					<RegistryKey Key="shell\open\command">
+						<RegistryValue Type="string" Value="&quot;[BIN_DIR_REF]nomacs.exe&quot; &quot;%1&quot;"/>
+					</RegistryKey>
+				</RegistryKey>
+				<RegistryKey Root="HKCR" Key="nomacs.webp.3">
+					<RegistryValue Type="string" Value="WebP"/>
+					<RegistryKey Key="DefaultIcon">
+						<RegistryValue Type="string" Value="[BIN_DIR_REF]nomacs.exe,4"/>
+					</RegistryKey>
+					<RegistryKey Key="shell\open\command">
+						<RegistryValue Type="string" Value="&quot;[BIN_DIR_REF]nomacs.exe&quot; &quot;%1&quot;"/>
+					</RegistryKey>
+				</RegistryKey>
+			</Component>
+		</DirectoryRef>
+	</Fragment>
+</Wix>
